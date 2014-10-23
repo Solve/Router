@@ -17,6 +17,13 @@ use Solve\Router\Router;
 class RouterTest extends \PHPUnit_Framework_TestCase {
 
     public function testBasic() {
+        /**
+         * products/{category}/{id}?
+         *
+         *
+         */
+
+
         $router = Router::getInstance();
         $router->addRoutes();
     }

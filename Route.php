@@ -12,10 +12,46 @@ namespace Solve\Router;
 
 class Route {
 
-    public function __construct($name, $uriPattern = null) {
+    private $_name;
+    private $_uriPattern;
+    private $_vars;
 
+    public function __construct($name = null, $uriPattern = null, $vars = array()) {
+
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getName() {
+        return $this->_name;
+    }
+
+    /**
+     * @param mixed $name
+     */
+    public function setName($name) {
+        $this->_name = $name;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUriPattern() {
+        return $this->_uriPattern;
+    }
+
+    /**
+     * @param mixed $uriPattern
+     */
+    public function setUriPattern($uriPattern) {
+        $this->_uriPattern = $uriPattern;
+    }
+
+    public function setup($setupVars) {
+        $this->_vars = $setupVars;
     }
 
 
 
-} 
+}
