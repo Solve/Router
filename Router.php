@@ -57,7 +57,7 @@ class Router {
 
     public function findRouteForUri($uri) {
         foreach($this->_routes as $routeName => $routeConfig) {
-            UriService::matchPatternToUri($routeConfig['pattern'], $uri, $routeConfig);
+            $match = UriService::matchPatternToUri($routeConfig['pattern'], $uri, $routeConfig);
         }
     }
 
