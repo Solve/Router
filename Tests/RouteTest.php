@@ -9,6 +9,8 @@
 
 namespace Solve\Router\Tests;
 
+require_once __DIR__ . '/../UriService.php';
+require_once __DIR__ . '/../Route.php';
 
 use Solve\Router\Route;
 
@@ -18,10 +20,14 @@ class RouteTest extends \PHPUnit_Framework_TestCase {
         $route = new Route();
         $route->setName('products');
         $route->setUriPattern('products/{category}/{id}?');
-        $route->setup(array(
+        $route->setConfig(array(
             'controller' => 'IndexController'
         ));
-        $route->generateUri();
+        $url = $route->getUri(array('category'=>'macbooks', 'id'=>'air'));
+        $this->assertEquals('products/macbooks/air', $url, 'getUri works fine');
+
+        $this->assertEquals('products/', Route::createInstance('products', 'products/')->getUri(), 'inline creation');
+        $this->assertEquals('products', $route, '__toString');
     }
 
 }

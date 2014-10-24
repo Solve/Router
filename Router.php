@@ -14,8 +14,10 @@ use Solve\Storage\ArrayStorage;
 
 class Router {
 
+    /**
+     * @var ArrayStorage
+     */
     private $_routes;
-
     /**
      * @var Router
      */
@@ -32,8 +34,15 @@ class Router {
         return self::$_instance;
     }
 
-    public function addRoute($name, $params) {
-        $this->_routes->offsetSet($name, $params);
+    public function addRoute($name, $config) {
+        $this->_routes->offsetSet($name, $config);
+        return $this;
+    }
+
+    public function addRoutes($routes) {
+        foreach($routes as $routeName => $routeConfig) {
+            $this->addRoute($routeName, $routeConfig);
+        }
         return $this;
     }
 
@@ -44,6 +53,12 @@ class Router {
     public function removeRoute($name) {
         $this->_routes->offsetUnset($name);
         return $this;
+    }
+
+    public function findRouteForUri($uri) {
+        foreach($this->_routes as $routeName => $routeConfig) {
+            UriService::matchPatternToUri($routeConfig['pattern'], $uri, $routeConfig);
+        }
     }
 
 } 

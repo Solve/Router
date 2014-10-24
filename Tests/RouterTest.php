@@ -10,6 +10,8 @@
 namespace Solve\Router\Tests;
 
 require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../UriService.php';
+require_once __DIR__ . '/../Route.php';
 require_once __DIR__ . '/../Router.php';
 
 use Solve\Router\Router;
@@ -17,15 +19,17 @@ use Solve\Router\Router;
 class RouterTest extends \PHPUnit_Framework_TestCase {
 
     public function testBasic() {
-        /**
-         * products/{category}/{id}?
-         *
-         *
-         */
+        $routes = array(
+            'products' => '/products/',
+            'product'  => array(
+                'pattern' => '/products/{id}/{action}',
+            ),
+        );
 
 
-        $router = Router::getInstance();
-        $router->addRoutes();
+        $router = new Router();
+        $router->addRoutes($routes);
+
     }
 
 }

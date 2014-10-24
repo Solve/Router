@@ -27,7 +27,16 @@ class UriServiceTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals('/categories/((?P<id>\d+)/)?', UriService::buildInternalPattern('/categories/({id}/)?', array('id'=>'\d+')), 'build custom parameter url');
 
         $this->assertEquals('/categories/1/products/1', UriService::buildUrlFromPattern('/(categories/({id})?)?/products/({id})?', array('id'=>1)), 'build hard url');
-//        var_dump();die();
+        $this->assertEquals('1', UriService::buildUrlFromPattern('{id}?', array('id'=>'1')), 'simple build with "?"');
+
+        try {
+            $url = UriService::buildUrlFromPattern('{id}');
+        } catch (\Exception $e) {
+            $this->assertEquals('You have to specify id for pattern', $e->getMessage(), 'Exception if no id specified');
+        }
+
+        $match = UriService::matchPatternToUri('/categories/({id}/)?', '/categories/1/');
+        $this->assertEquals(array('id'=>1), $match, 'matcher works');
     }
 
 }

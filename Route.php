@@ -12,12 +12,31 @@ namespace Solve\Router;
 
 class Route {
 
+    /**
+     * @var string
+     */
     private $_name;
     private $_uriPattern;
-    private $_vars;
+    private $_config;
+    private $_vars = array();
 
-    public function __construct($name = null, $uriPattern = null, $vars = array()) {
+    public function __construct($name = null, $uriPattern = null, $config = array()) {
+        $this->_name = $name;
+        $this->_uriPattern = $uriPattern;
+        $this->_config = $config;
+    }
 
+    public static function createInstance($name = null, $uriPattern = null, $config = array()) {
+        return new static($name, $uriPattern, $config);
+    }
+
+    public function getUri($vars = array()) {
+        if (!empty($vars)) {
+            foreach ($vars as $key => $value) {
+                $this->_vars[$key] = $value;
+            }
+        }
+        return UriService::buildUrlFromPattern($this->_uriPattern, $this->_vars);
     }
 
     /**
@@ -48,10 +67,39 @@ class Route {
         $this->_uriPattern = $uriPattern;
     }
 
-    public function setup($setupVars) {
-        $this->_vars = $setupVars;
+    /**
+     * @return array
+     */
+    public function getConfig() {
+        return $this->_config;
     }
 
+    /**
+     * @param array $config
+     */
+    public function setConfig($config) {
+        $this->_config = $config;
+    }
 
+    /**
+     * @return array
+     */
+    public function getVars() {
+        return $this->_vars;
+    }
 
+    /**
+     * @param array $vars
+     */
+    public function setVars($vars) {
+        $this->_vars = $vars;
+    }
+
+    public function getVar($name, $default = null) {
+        return isset($this->_vars[$name]) ? $this->_vars[$name] : $default;
+    }
+
+    public function __toString() {
+        return $this->_name;
+    }
 }

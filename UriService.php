@@ -21,12 +21,34 @@ class UriService {
         'controller', 'action', 'application'
     );
 
-    public static function matchUri($pattern) {
-        $pattern = self::buildPattern($pattern);
+    public static function matchPatternToUri($pattern, $uri, $vars = array()) {
+        $match = null;
+        preg_match(self::buildPattern($pattern, $vars), $uri, $match);
+        if ($match) {
+            return self::buildResult($match, $vars);
+        } else {
+            return false;
+        }
     }
 
     public static function buildPattern($sourcePattern, $vars = array()) {
         return '#^' . self::buildInternalPattern($sourcePattern, $vars) . '$#isU';
+    }
+
+    protected static function buildResult($match, $vars) {
+        $result = array();
+        foreach($match as $key=>$value) {
+            if (!is_numeric($key)) {
+                $result[$key] = $value;
+            }
+            if (isset($vars[$key])) {
+                $vars[$key] = $value;
+            }
+        }
+        foreach($vars as $key=>$value) {
+            $result[$key] = $value;
+        }
+        return $result;
     }
 
     public static function buildInternalPattern($sourcePattern, $vars = array()) {
@@ -54,30 +76,41 @@ class UriService {
     }
 
     public static function buildUrlFromPattern($pattern, $vars = array()) {
-        $pattern = self::removeIncompleteOptionals($pattern, $vars);
+        $pattern = self::fillAndRemoveIncompleteOptionals($pattern, $vars);
+        if (strpos($pattern, '{') !== false) {
+            $matches = array();
+            preg_match_all('#\{(\w+)\}#is', $pattern, $matches);
+            throw new \Exception('You have to specify ' . implode(',', $matches[1]) . ' for pattern');
 
+        }
         return $pattern;
     }
 
-    private static function removeIncompleteOptionals($pattern, $vars) {
+    private static function fillAndRemoveIncompleteOptionals($pattern, $vars) {
+        $pattern = preg_replace('#(\{.*\})\?#', '(\1)?', $pattern);
+
         $reg = '#(\(([-_\d\w{}/]*)\)\?)#isU';
         $res = null;
         preg_match_all($reg, $pattern, $res);
         if (!empty($res[2])) {
             foreach ($res[2] as $key=>$varPattern) {
-                foreach($vars as $varName => $varValue) {
-                    $varPattern = str_replace('{'.$varName . '}', $varValue, $varPattern);
-                }
+                $varPattern = self::updateStringWithVars($varPattern, $vars);
                 if (strpos($varPattern, '{') !== false) {
                     $varPattern = '';
-                } else {
                 }
                 $pattern = str_replace($res[1][$key], $varPattern, $pattern);
             }
-            $pattern = self::removeIncompleteOptionals($pattern, $vars);
+            $pattern = self::fillAndRemoveIncompleteOptionals($pattern, $vars);
+        } else {
+            $pattern = self::updateStringWithVars($pattern, $vars);
         }
         return $pattern;
     }
 
-
+    private static function updateStringWithVars($string, $vars) {
+        foreach($vars as $varName => $varValue) {
+            $string = str_replace('{'.$varName . '}', $varValue, $string);
+        }
+        return $string;
+    }
 } 
