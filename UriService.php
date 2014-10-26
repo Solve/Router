@@ -87,8 +87,7 @@ class UriService {
     }
 
     private static function fillAndRemoveIncompleteOptionals($pattern, $vars) {
-        $pattern = preg_replace('#(\{.*\})\?#', '(\1)?', $pattern);
-
+        $pattern = preg_replace('#(\{[-_\d\w/]+\})\?#', '(\1)?', $pattern);
         $reg = '#(\(([-_\d\w{}/]*)\)\?)#isU';
         $res = null;
         preg_match_all($reg, $pattern, $res);

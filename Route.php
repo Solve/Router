@@ -10,33 +10,47 @@
 namespace Solve\Router;
 
 
+use Solve\Http\Request;
+
 class Route {
 
     /**
      * @var string
      */
     private $_name;
+    /**
+     * @var Request
+     */
+    private $_request;
     private $_uriPattern;
     private $_config;
-    private $_vars = array();
+    private $_vars       = array();
+    private $_isNotFound = false;
 
     public function __construct($name = null, $uriPattern = null, $config = array()) {
-        $this->_name = $name;
+        $this->_name       = $name;
         $this->_uriPattern = $uriPattern;
-        $this->_config = $config;
+        $this->_config     = $config;
     }
 
     public static function createInstance($name = null, $uriPattern = null, $config = array()) {
         return new static($name, $uriPattern, $config);
     }
 
-    public function getUri($vars = array()) {
+    public static function createNotFoundInstance() {
+        $route = new static('notFoundRoute');
+        $route->_isNotFound = true;
+        return $route;
+    }
+
+    public function buildUri($vars = array()) {
         if (!empty($vars)) {
             foreach ($vars as $key => $value) {
                 $this->_vars[$key] = $value;
             }
         }
-        return UriService::buildUrlFromPattern($this->_uriPattern, $this->_vars);
+        $uri = UriService::buildUrlFromPattern($this->_uriPattern, $this->_vars);
+        return $uri;
     }
 
     /**
@@ -82,6 +96,21 @@ class Route {
     }
 
     /**
+     * @return Request
+     */
+    public function getRequest() {
+        return $this->_request;
+    }
+
+    /**
+     * @param Request $request
+     */
+    public function setRequest($request) {
+        $this->_request = $request;
+    }
+
+
+    /**
      * @return array
      */
     public function getVars() {
@@ -97,6 +126,29 @@ class Route {
 
     public function getVar($name, $default = null) {
         return isset($this->_vars[$name]) ? $this->_vars[$name] : $default;
+    }
+
+    public function getRequestVar($name, $defaultValue = null) {
+        if (!$this->_request) return null;
+        return $this->_request->getVar($name, $defaultValue);
+    }
+
+    public function getRequestVars() {
+        if (!$this->_request) return null;
+        return $this->_request->getVars();
+    }
+
+    public function setIsNotFound($isNotFound) {
+        $this->_isNotFound = $isNotFound;
+        return $this;
+    }
+
+    public function isNotFound() {
+        return $this->_isNotFound;
+    }
+
+    public function isExists() {
+        return !$this->_isNotFound;
     }
 
     public function __toString() {

@@ -23,10 +23,10 @@ class RouteTest extends \PHPUnit_Framework_TestCase {
         $route->setConfig(array(
             'controller' => 'IndexController'
         ));
-        $url = $route->getUri(array('category'=>'macbooks', 'id'=>'air'));
-        $this->assertEquals('products/macbooks/air', $url, 'getUri works fine');
+        $url = $route->buildUri(array('category'=>'macbooks', 'id'=>'air'));
+        $this->assertEquals('products/macbooks/air', $url, 'buildUri works fine');
 
-        $this->assertEquals('products/', Route::createInstance('products', 'products/')->getUri(), 'inline creation');
+        $this->assertEquals('products/', Route::createInstance('products', 'products/')->buildUri(), 'inline creation');
         $this->assertEquals('products', $route, '__toString');
     }
 

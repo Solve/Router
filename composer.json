@@ -13,7 +13,8 @@
     ],
     "require": {
         "php": ">=5.3.0",
-        "solve/storage": "*"
+        "solve/storage": "*",
+        "solve/http": "*"
     },
     "autoload": {
         "psr-0": { "Solve\\Router\\": "" }
