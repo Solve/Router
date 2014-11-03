@@ -117,11 +117,14 @@ class Route {
         return $this->_vars;
     }
 
-    /**
-     * @param array $vars
-     */
     public function setVars($vars) {
         $this->_vars = $vars;
+        return $this;
+    }
+
+    public function setVar($name, $value) {
+        $this->_vars[$name] = $value;
+        return $this;
     }
 
     public function getVar($name, $default = null) {

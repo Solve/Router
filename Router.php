@@ -170,7 +170,7 @@ class Router {
     }
 
     /**
-     * @return mixed
+     * @return Request
      */
     public function getCurrentRequest() {
         return $this->_currentRequest;
