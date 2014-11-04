@@ -43,11 +43,15 @@ class Route {
         return $route;
     }
 
-    public function buildUri($vars = array()) {
-        if (!empty($vars)) {
-            foreach ($vars as $key => $value) {
-                $this->_vars[$key] = $value;
+    public function buildUri($vars = null) {
+        $vars = (array)$vars;
+        foreach($this->_config as $key=>$value) {
+            if (!array_key_exists($key, $vars) && preg_match('#[-_a-z0-9]+#', $value)) {
+                $vars[$key] = $value;
             }
+        }
+        foreach ($vars as $key => $value) {
+            $this->_vars[$key] = $value;
         }
         $uri = UriService::buildUriFromPattern($this->_uriPattern, $this->_vars);
         return $uri;

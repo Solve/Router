@@ -86,16 +86,6 @@ class UriService {
         return $pattern;
     }
 
-    public static function buildUriFromRoute(Route $route, $vars = array()) {
-        $internalVars = $route->getConfig();
-        foreach($internalVars as $key=>$value) {
-            if (!array_key_exists($key, $vars) && preg_match('#'.self::$_internalPatterns['operand'].'#', $value)) {
-                $vars[$key] = $value;
-            }
-        }
-        return self::buildUriFromPattern($route->getUriPattern(), $vars);
-    }
-
     private static function fillAndRemoveIncompleteOptionals($pattern, $vars) {
         $pattern = preg_replace('#(\{[-_\d\w/]+\})\?#', '(\1)?', $pattern);
         $reg = '#(\(([-_\d\w{}/]*)\)\?)#isU';
