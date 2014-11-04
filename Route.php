@@ -78,11 +78,9 @@ class Route {
         return $this->_uriPattern;
     }
 
-    /**
-     * @param mixed $uriPattern
-     */
     public function setUriPattern($uriPattern) {
         $this->_uriPattern = $uriPattern;
+        return $this;
     }
 
     /**

@@ -96,9 +96,6 @@ class Router {
         return $this->_webRoot;
     }
 
-    /**
-     * @param string $webRoot
-     */
     public function setWebRoot($webRoot) {
         if ($webRoot) {
             if ($webRoot[0] !== '/') {
@@ -114,6 +111,7 @@ class Router {
         foreach ($this->_routes as $route => $config) {
             $this->updatePatternWithWebRoot($this->_routes[$route]['pattern']);
         }
+        return $this;
     }
 
     private function updatePatternWithWebRoot(&$pattern) {
@@ -157,11 +155,9 @@ class Router {
         return $this->_currentHost;
     }
 
-    /**
-     * @param mixed $currentHost
-     */
     public function setCurrentHost($currentHost) {
         $this->_currentHost = $currentHost;
+        return $this;
     }
 
     /**
@@ -171,11 +167,9 @@ class Router {
         return $this->_currentRoute;
     }
 
-    /**
-     * @param Route $currentRoute
-     */
     public function setCurrentRoute($currentRoute) {
         $this->_currentRoute = $currentRoute;
+        return $this;
     }
 
     /**
@@ -185,11 +179,9 @@ class Router {
         return $this->_currentRequest;
     }
 
-    /**
-     * @param mixed $currentRequest
-     */
     public function setCurrentRequest($currentRequest) {
         $this->_currentRequest = $currentRequest;
+        return $this;
     }
 
 
