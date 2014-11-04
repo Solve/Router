@@ -71,6 +71,10 @@ class Router {
         return $this;
     }
 
+    public function getRoute($routeName) {
+        return $this->_routes->get($routeName);
+    }
+
     public function getRoutes() {
         return $this->_routes;
     }
