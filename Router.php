@@ -72,7 +72,12 @@ class Router {
     }
 
     public function getRoute($routeName) {
-        return $this->_routes->get($routeName);
+        $route = null;
+        if ($this->_routes->has($routeName)) {
+            $info = $this->_routes->get($routeName);
+            $route = new Route($routeName, $info['pattern'], $info);
+        }
+        return $route;
     }
 
     public function getRoutes() {
