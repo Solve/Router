@@ -26,16 +26,16 @@ class UriServiceTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals('/(?P<action>.*)/', UriService::buildInternalPattern('/{action}/', array('action'=>'.*')), 'build custom action url');
         $this->assertEquals('/categories/((?P<id>\d+)/)?', UriService::buildInternalPattern('/categories/({id}/)?', array('id'=>'\d+')), 'build custom parameter url');
 
-        $this->assertEquals('/categories/1/products/1', UriService::buildUrlFromPattern('/(categories/({id})?)?/products/({id})?', array('id'=>1)), 'build hard url');
-        $this->assertEquals('1', UriService::buildUrlFromPattern('{id}?', array('id'=>'1')), 'simple build with "?"');
+        $this->assertEquals('/categories/1/products/1', UriService::buildUriFromPattern('/(categories/({id})?)?/products/({id})?', array('id'=>1)), 'build hard url');
+        $this->assertEquals('1', UriService::buildUriFromPattern('{id}?', array('id'=>'1')), 'simple build with "?"');
 
         try {
-            $url = UriService::buildUrlFromPattern('{id}');
+            $url = UriService::buildUriFromPattern('{id}');
         } catch (\Exception $e) {
             $this->assertEquals('You have to specify id for pattern', $e->getMessage(), 'Exception if no id specified');
         }
 
-        $this->assertEquals('/products/1/', UriService::buildUrlFromPattern('/products/{id}/{action}?', array('id'=>1)));
+        $this->assertEquals('/products/1/', UriService::buildUriFromPattern('/products/{id}/{action}?', array('id'=>1)));
 
         $match = UriService::matchPatternToUri('/categories/({id}/)?', '/categories/1/');
         $this->assertEquals(array('id'=>1), $match, 'matcher works');

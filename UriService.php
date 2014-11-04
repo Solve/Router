@@ -75,7 +75,7 @@ class UriService {
         return $sourcePattern;
     }
 
-    public static function buildUrlFromPattern($pattern, $vars = array()) {
+    public static function buildUriFromPattern($pattern, $vars = array()) {
         $pattern = self::fillAndRemoveIncompleteOptionals($pattern, $vars);
         if (strpos($pattern, '{') !== false) {
             $matches = array();
@@ -84,6 +84,16 @@ class UriService {
 
         }
         return $pattern;
+    }
+
+    public static function buildUriFromRoute(Route $route, $vars = array()) {
+        $internalVars = $route->getConfig();
+        foreach($internalVars as $key=>$value) {
+            if (!array_key_exists($key, $vars) && preg_match('#'.self::$_internalPatterns['operand'].'#', $value)) {
+                $vars[$key] = $value;
+            }
+        }
+        return self::buildUriFromPattern($route->getUriPattern(), $vars);
     }
 
     private static function fillAndRemoveIncompleteOptionals($pattern, $vars) {

@@ -49,7 +49,7 @@ class Route {
                 $this->_vars[$key] = $value;
             }
         }
-        $uri = UriService::buildUrlFromPattern($this->_uriPattern, $this->_vars);
+        $uri = UriService::buildUriFromPattern($this->_uriPattern, $this->_vars);
         return $uri;
     }
 
