@@ -10,7 +10,9 @@
 namespace Solve\Router;
 
 
+use Solve\Http\HttpStatus;
 use Solve\Http\Request;
+use Solve\Http\Response;
 use Solve\Storage\ArrayStorage;
 
 class Router {
@@ -146,6 +148,22 @@ class Router {
             }
         }
         return $this->_currentRoute;
+    }
+
+    public function redirectToRelativeUri($relativeUri) {
+        if ($relativeUri == '/') {
+            $relativeUri = '';
+        }
+        $fullUrl = $this->getBaseUri() . $relativeUri;
+        $response = new Response();
+        $response->setStatusCode(HttpStatus::HTTP_FOUND);
+        $response->setHeader('Location', $fullUrl);
+        $response->send();
+        die();
+    }
+
+    public function getBaseUri() {
+        return $this->_currentRequest->getProtocol() . '://' . $this->_currentRequest->getHost() . $this->_webRoot;
     }
 
     /**
