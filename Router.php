@@ -15,6 +15,13 @@ use Solve\Http\Request;
 use Solve\Http\Response;
 use Solve\Storage\ArrayStorage;
 
+/**
+ * Class Router
+ * @package Solve\Router
+ *
+ * @version 1.0
+ * @author Alexandr Viniychuk <alexandr.viniychuk@icloud.com>
+ */
 class Router {
 
     /**
@@ -200,6 +207,14 @@ class Router {
     public function setCurrentRequest($currentRequest) {
         $this->_currentRequest = $currentRequest;
         return $this;
+    }
+
+    public function getExecutionMode() {
+        if (empty($_SERVER['DOCUMENT_ROOT'])) {
+            return Request::MODE_CONSOLE;
+        } else {
+            return Request::MODE_WEB;
+        }
     }
 
 
