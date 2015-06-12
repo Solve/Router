@@ -39,6 +39,9 @@ class Router {
      * @var Route
      */
     private $_currentRoute;
+    /**
+     * @var Request
+     */
     private $_currentRequest;
 
     public function __construct() {
@@ -145,8 +148,24 @@ class Router {
             $this->_currentRoute->setName('webRootNotFound');
             return $this->_currentRoute;
         }
+        $method = strtolower($this->getCurrentRequest()->getMethod());
         foreach ($this->_routes as $routeName => $routeConfig) {
-            $match = UriService::matchPatternToUri($routeConfig['pattern'], $uri, $routeConfig);
+            $currentUri = $uri;
+            if (!empty($routeConfig['prefix']) && ($routeConfig['prefix'] != '/')) {
+                if (strpos($uri, $routeConfig['prefix']) !== 0) {
+                    //vd($uri, $routeConfig);
+                } else {
+                    $routeConfig['pattern'] = $routeConfig['prefix'] . $routeConfig['pattern'];
+                    //$currentUri = substr($uri, 1, strlen($routeConfig['prefix']));
+                    //vd($currentUri, $routeConfig);
+                }
+            }
+            if (!empty($routeConfig['method']) || $method == "console") {
+                if (empty($routeConfig['method']) || strtolower($routeConfig['method']) !== $method) {
+                    continue;
+                }
+            }
+            $match = UriService::matchPatternToUri($routeConfig['pattern'], $currentUri, $routeConfig);
             if ($match) {
                 $this->_currentRoute = new Route($routeName, $routeConfig['pattern'], $routeConfig);
                 $this->_currentRoute->setRequest($this->_currentRequest);
@@ -165,6 +184,15 @@ class Router {
         $response = new Response();
         $response->setStatusCode(HttpStatus::HTTP_FOUND);
         $response->setHeader('Location', $fullUrl);
+        $response->send();
+        die();
+    }
+
+    public function redirectToReferrer() {
+        $url = $this->_currentRequest->getHeader('referer');
+        $response = new Response();
+        $response->setStatusCode(HttpStatus::HTTP_FOUND);
+        $response->setHeader('Location', $url);
         $response->send();
         die();
     }
