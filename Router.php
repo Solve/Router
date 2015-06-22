@@ -154,6 +154,7 @@ class Router {
             if (!empty($routeConfig['prefix']) && ($routeConfig['prefix'] != '/')) {
                 if (strpos($uri, $routeConfig['prefix']) !== 0) {
                     //vd($uri, $routeConfig);
+                    continue;
                 } else {
                     $routeConfig['pattern'] = $routeConfig['prefix'] . $routeConfig['pattern'];
                     //$currentUri = substr($uri, 1, strlen($routeConfig['prefix']));
