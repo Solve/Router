@@ -38,14 +38,14 @@ class Route {
     }
 
     public static function createNotFoundInstance() {
-        $route = new static('notFoundRoute');
+        $route              = new static('notFoundRoute');
         $route->_isNotFound = true;
         return $route;
     }
 
     public function buildUri($vars = null) {
         $vars = (array)$vars;
-        foreach($this->_config as $key=>$value) {
+        foreach ($this->_config as $key => $value) {
             if (!array_key_exists($key, $vars) && preg_match('#[-_a-z0-9]+#', $value)) {
                 $vars[$key] = $value;
             }
@@ -54,7 +54,7 @@ class Route {
             $this->_vars[$key] = $value;
         }
         $uri = UriService::buildUriFromPattern($this->_uriPattern, $this->_vars);
-        return $uri;
+        return (!empty($this->_config['prefix']) ? $this->_config['prefix'] : '') . $uri;
     }
 
     /**
